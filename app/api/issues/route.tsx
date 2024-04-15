@@ -13,8 +13,22 @@ export async function POST(request: NextRequest) {
 
   // validation
   const validation = IssueScheme.safeParse(body);
-  if (!validation.success) return NextResponse.json({ error: validation.error.format() });
-  const issue = await prisma.issue.create({ data: body });
+  if (!validation.success)
+    return NextResponse.json({ error: validation.error.format() });
+
+  // get user
+  const user = await prisma.user.findUnique({ where: { id: parseInt(body.userId) } });
+  if (!user)
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+  // create
+  const issue = await prisma.issue.create({ data: {
+    title: body.title,
+    description: body.description,
+    user: {
+      connect: { id: user.id }
+    }
+  } });
 
   // return
   return NextResponse.json(issue);

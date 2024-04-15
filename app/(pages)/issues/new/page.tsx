@@ -8,31 +8,47 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 const Page = () => {
-  const [error, setError] = useState('')
-  const router = useRouter()
+  // Инициализация стейта
+  const [error, setError] = useState("");
 
-  const { register, handleSubmit, formState: {errors} } = useForm<IIssueForm>({
+  // Инициализация роутера
+  const router = useRouter();
+
+  // Инициализация формы
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IIssueForm>({
     resolver: zodResolver(IssueScheme),
   });
 
+  // Обработчик создания задачи
   const submitHandler = (data: IIssueForm) => {
     try {
-      fetch('http://localhost:3000/api/issues', {
-        method: 'POST',
+      // Отправка данных на сервер
+      fetch("http://localhost:3000/api/issues", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
-      })
-      router.push('/issues')
+        body: JSON.stringify(data),
+      });
+      // Перенаправление на страницу с задачами
+      router.push("/issues");
     } catch (error) {
-      setError("Произошла ошибка при создании задачи")
+      setError("Произошла ошибка при создании задачи");
     }
-  }
+  };
 
   return (
     <div>
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit(submitHandler)}>
+      {/* Форма */}
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={handleSubmit(submitHandler)}
+      >
+        {/* Заголовок */}
         <Input
           label="Заголовок"
           placeholder="введите текст..."
@@ -40,6 +56,7 @@ const Page = () => {
           register={register("title")}
           error={errors.title?.message}
         />
+        {/* Описание */}
         <Input
           label="Описание"
           placeholder="введите текст..."
@@ -47,8 +64,12 @@ const Page = () => {
           register={register("description")}
           error={errors.description?.message}
         />
+        {/* Статус */}
         {error ? <p className="text-red-500">{error}</p> : null}
-        <button className="btn btn-secondary" type="submit">Создать</button>
+        {/* Отправка */}
+        <button className="btn btn-secondary" type="submit">
+          Создать
+        </button>
       </form>
     </div>
   );

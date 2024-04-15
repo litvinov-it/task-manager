@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import AuthProvider from "./components/provider/provider";
+import Header from "./components/header/header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,12 +20,10 @@ export default function RootLayout({
   return (
     <html lang="ru" data-theme="cupcake">
       <body className={`w-1/2 p-4 mx-auto ${inter.className}`}>
-        <header className="my-4 w-full flex items-center justify-center">
-          <Link href={"/issues"} className="btn btn-ghost text-2xl">
-            Задачи
-          </Link>
-        </header>
-        {children}
+        <AuthProvider>
+          <Header />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
